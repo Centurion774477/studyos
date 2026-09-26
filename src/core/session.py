@@ -1,72 +1,52 @@
-import httpx as requests
-import json
-
 import os
+import json
+import urllib.request
+import urllib.error
 
 try:
     from dotenv import load_dotenv
     load_dotenv()
-    WORKER = os.getenv("WORKER", "http://localhost:8000")
 except ImportError:
-    WORKER = os.environ.get("WORKER", "http://localhost:8000")
     pass
 
-def login(username, password):
-    payload = {
-        "name": username,
-        "pass": password
-    }
+WORKER = os.environ.get("WORKER", "http://localhost:8000")
 
+def _post(endpoint, payload):
+    data = json.dumps(payload).encode("utf-8")
+    req = urllib.request.Request(
+        f"{WORKER}{endpoint}",
+        data=data,
+        headers={
+            "Content-Type": "application/json",
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+        },
+        method="POST"
+    )
     try:
-        response = requests.post(WORKER+"/login", json=payload, timeout=10)
-        
-        response.raise_for_status()
+        with urllib.request.urlopen(req, timeout=10) as res:
+            return res.getcode(), res.read().decode("utf-8")
+    except urllib.error.HTTPError as e:
+        return e.code, e.read().decode("utf-8") if e.fp else "{}"
+    except Exception:
+        return 500, "{}"
 
-        if response.status_code != 200:
-            print(f"Status code {response.status_code}. Error logging in")
-            return ("","")
-        else:
-            user = json.loads(response.text)
-            return (user["name"], user["token"])
-
-        
-    except:
-        print(f"Error")
-        return ("","")
+def login(username, password):
+    payload = {"name": username, "pass": password}
+    code, text = _post("/login", payload)
+    if code != 200:
+        print(f"Status code {code}. Error logging in")
+        return "", ""
+    user = json.loads(text)
+    return user["name"], user["token"]
 
 def register(username, password):
-    payload = {
-        "name": username,
-        "pass": password
-    }
+    payload = {"name": username, "pass": password}
+    code, text = _post("/register", payload)
+    if code != 201:
+        print(f"Status code {code}. Error registering")
+        return "", ""
+    return login(username, password)
 
-    try:
-        response = requests.post(WORKER+"/register", json=payload, timeout=10)
-        
-        response.raise_for_status()
-
-        if response.status_code != 201:
-            print(f"Status code {response.status_code}. Error registering")
-            return ("","")
-        else:
-            user = json.loads(response.text)
-            return login(username, password)
-
-        
-    except:
-        print(f"Error")
-        return ("","")
-
-def logout(username, token) -> None:
-    payload = {
-        "user": username,
-        "token": token
-    }
-
-    try:
-        response = requests.post(WORKER+"/logout", json=payload, timeout=10)
-        
-        response.raise_for_status()
-        
-    except:
-        print(f"Error")
+def logout(username, token):
+    payload = {"user": username, "token": token}
+    _post("/logout", payload)
