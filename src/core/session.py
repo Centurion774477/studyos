@@ -12,6 +12,9 @@ except ImportError:
 WORKER = os.environ.get("WORKER", "")
 
 def _post(endpoint, payload):
+    if not payload or not payload.get("name") and not payload.get("user"):
+        return 400, "{}"
+    
     data = json.dumps(payload).encode("utf-8")
     req = urllib.request.Request(
         f"{WORKER}{endpoint}",
