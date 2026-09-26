@@ -31,11 +31,12 @@ jobs:
 
       - name: Setup uv
         uses: astral-sh/setup-uv@v6
-
+  
       - name: Build app
         shell: bash
         run: |
-          uv run -r requirements.txt flet build web --yes --verbose --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
+          uv pip install -r requirements.txt
+          uv run flet build web --yes --verbose --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v4.0.0
