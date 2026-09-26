@@ -76,6 +76,8 @@ jobs:
       - name: Install Linux dependencies
         if: matrix.needs_linux_deps
         shell: bash
+        env:
+          WORKER: ${{ secrets.WORKER }} 
         run: |
           sudo apt update --allow-releaseinfo-change
           sudo apt-get install -y --no-install-recommends \
