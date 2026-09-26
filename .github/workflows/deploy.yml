@@ -34,13 +34,11 @@ jobs:
 
       - name: Build app
         shell: bash
-        env:
-          WORKER: ${{ secrets.WORKER }} 
         run: |
           uv venv
           source .venv/bin/activate
           uv pip install -r requirements.txt
-          uv run --with-requirements requirements.txt flet build web src --yes --verbose --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
+          flet build web src --yes --verbose --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash --env WORKER=${{ secrets.WORKER }}
 
       - name: Upload Pages Artifact
         uses: actions/upload-pages-artifact@v4.0.0
