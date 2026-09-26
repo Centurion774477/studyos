@@ -20,6 +20,8 @@ env:
 
   FLET_CLI_NO_RICH_OUTPUT: 1
 
+  UV_SYSTEM_PYTHON: 1
+  
 jobs:
   build:
     name: Build web app
