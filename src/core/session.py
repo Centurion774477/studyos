@@ -1,10 +1,15 @@
-import os
-from dotenv import load_dotenv
 import requests
 import json
 
-load_dotenv()
-WORKER = os.getenv("WORKER", "error")
+import os
+
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    WORKER = os.getenv("WORKER", "http://localhost:8000")
+except ImportError:
+    WORKER = os.environ.get("WORKER", "http://localhost:8000")
+    pass
 
 def login(username, password):
     payload = {
