@@ -1,17 +1,15 @@
-# docs: https://docs.flet.dev/publish/#github-actions/
-
 name: Build Flet App
 
 on:
   push:
+    branches: [ main, master ]
   pull_request:
+    branches: [ main, master ]
   workflow_dispatch:
 
 env:
   UV_PYTHON: 3.12
   PYTHONUTF8: 1
-
-  # https://docs.flet.dev/reference/environment-variables
   FLET_CLI_NO_RICH_OUTPUT: 1
 
 jobs:
@@ -25,47 +23,47 @@ jobs:
           # -------- Desktop --------
           - name: linux
             runner: ubuntu-latest
-            build_cmd: "flet build linux"
-            artifact_path: build/linux
+            build_cmd: "flet build linux src"
+            artifact_path: src/build/linux
             needs_linux_deps: true
 
           - name: macos
             runner: macos-latest
-            build_cmd: "flet build macos"
-            artifact_path: build/macos
+            build_cmd: "flet build macos src"
+            artifact_path: src/build/macos
             needs_linux_deps: false
 
           - name: windows
             runner: windows-latest
-            build_cmd: "flet build windows"
-            artifact_path: build/windows
+            build_cmd: "flet build windows src"
+            artifact_path: src/build/windows
             needs_linux_deps: false
 
           # -------- Android --------
           - name: aab
             runner: ubuntu-latest
-            build_cmd: "flet build aab"
-            artifact_path: build/aab
+            build_cmd: "flet build aab src"
+            artifact_path: src/build/aab
             needs_linux_deps: false
 
           - name: apk
             runner: ubuntu-latest
-            build_cmd: "flet build apk"
-            artifact_path: build/apk
+            build_cmd: "flet build apk src"
+            artifact_path: src/build/apk
             needs_linux_deps: false
 
           # -------- iOS --------
           - name: ipa
             runner: macos-latest
-            build_cmd: "flet build ipa"
-            artifact_path: build/ipa
+            build_cmd: "flet build ipa src"
+            artifact_path: src/build/ipa
             needs_linux_deps: false
 
           # -------- Web --------
           - name: web
             runner: ubuntu-latest
-            build_cmd: "flet build web"
-            artifact_path: build/web
+            build_cmd: "flet build web src"
+            artifact_path: src/build/web
             needs_linux_deps: false
 
     steps:
@@ -88,14 +86,14 @@ jobs:
             gstreamer1.0-qt5 gstreamer1.0-pulseaudio pkg-config libsecret-1-0 libsecret-1-dev
           sudo apt-get clean
 
-
       - name: Build app
         shell: bash
         run: |
-          uv run ${{ matrix.build_cmd }} --yes --verbose
+          # Se inyecta requirements.txt de forma nativa y aislada para cada SO
+          uv run --with-requirements requirements.txt ${{ matrix.build_cmd }} --yes --verbose
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v5.0.0
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}-build-artifact
           path: ${{ matrix.artifact_path }}
