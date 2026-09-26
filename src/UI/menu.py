@@ -8,6 +8,9 @@ if src_path not in sys.path:
     sys.path.append(src_path)
 
 from core import session
+from main import main as app_main
+
+USERNAME, TOKEN = "", ""
 
 def main(page: ft.Page):
     page.clean()
@@ -42,10 +45,21 @@ def main(page: ft.Page):
         expand=True,
     )
 
+    def logout_click(_e):
+        session.logout(USERNAME, TOKEN)
+        app_main(page)
+
+    logout = ft.Button(
+        content="Logout",
+        color=ft.Colors.RED,
+        on_click=logout_click
+    )
+
     text = ft.Column(
         controls=[
             title,
             subtitle,
+            logout
         ],
         horizontal_alignment=ft.CrossAxisAlignment.CENTER,
         spacing=15

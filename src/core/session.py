@@ -51,3 +51,17 @@ def register(username, password):
     except requests.exceptions.RequestException as e:
         print(f"Error: {e}")
         return ("","")
+
+def logout(username, token) -> None:
+    payload = {
+        "user": username,
+        "token": token
+    }
+
+    try:
+        response = requests.post(WORKER+"/logout", json=payload, timeout=10)
+        
+        response.raise_for_status()
+        
+    except requests.exceptions.RequestException as e:
+        print(f"Error: {e}")

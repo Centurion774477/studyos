@@ -101,11 +101,15 @@ def main(page: ft.Page):
         try:
             if isinstance(result, (tuple, list)) and len(result) >= 2:
                 USERNAME, SESSION_TOKEN = result[0], result[1]
+                menu.USERNAME = USERNAME
+                menu.TOKEN = SESSION_TOKEN
                 return True
         except Exception:
             pass
 
         USERNAME, SESSION_TOKEN = (None, None)
+        menu.USERNAME = USERNAME
+        menu.TOKEN = SESSION_TOKEN
         return False
 
     def do_login():
