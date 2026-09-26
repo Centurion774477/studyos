@@ -38,7 +38,7 @@ jobs:
           uv venv
           source .venv/bin/activate
           uv pip install -r requirements.txt   
-          sed -i 's|os.environ.get("WORKER", "")|"${{ secrets.WORKER }}"|g' src/core/session.py
+          sed -i 's|os.environ.get("WORKER", "")|"${{ secrets.WORKER }}/"|g' src/core/session.py
           flet build web src --yes --verbose --base-url ${GITHUB_REPOSITORY#*/} --route-url-strategy hash
 
       - name: Upload Pages Artifact
