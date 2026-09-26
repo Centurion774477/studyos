@@ -11,7 +11,7 @@ from core import session
 
 def main(page: ft.Page, on_success=None):
     page.clean()
-    page.title = "studyos | register"
+    page.title = "StudyOS | register"
     page.vertical_alignment = ft.MainAxisAlignment.CENTER
     page.horizontal_alignment = ft.CrossAxisAlignment.CENTER
     page.theme_mode = ft.ThemeMode.LIGHT
@@ -22,7 +22,7 @@ def main(page: ft.Page, on_success=None):
     bg_src = str(bg_path)
 
     title = ft.Text(
-        value="Welcome!",
+        value="Welcome to StudyOS!",
         size=40,
         weight=ft.FontWeight.BOLD,
         color=ft.Colors.BLUE_700
