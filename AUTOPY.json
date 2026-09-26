@@ -12,7 +12,7 @@
             "compiler": "pip",
             "id": "setup",
             "flags": ["install", "-r"],
-            "input": "requirements.txt",
+            "input": "requirements-dev.txt",
             "output": "",
             "outputSymbol": ""
         }

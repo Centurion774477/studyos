@@ -1,4 +1,4 @@
-import requests
+import httpx as requests
 import json
 
 import os
@@ -30,8 +30,8 @@ def login(username, password):
             return (user["name"], user["token"])
 
         
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+    except:
+        print(f"Error")
         return ("","")
 
 def register(username, password):
@@ -53,8 +53,8 @@ def register(username, password):
             return login(username, password)
 
         
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+    except:
+        print(f"Error")
         return ("","")
 
 def logout(username, token) -> None:
@@ -68,5 +68,5 @@ def logout(username, token) -> None:
         
         response.raise_for_status()
         
-    except requests.exceptions.RequestException as e:
-        print(f"Error: {e}")
+    except:
+        print(f"Error")
