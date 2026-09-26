@@ -9,13 +9,7 @@ try:
 except ImportError:
     pass
 
-RAW_WORKER = os.environ.get("WORKER", "http://localhost:8000/api")
-
-if "localhost" not in RAW_WORKER:
-    clean_url = RAW_WORKER.replace("https://", "").replace("http://", "").replace("ws://", "").replace("wss://", "")
-    WORKER = f"https://{clean_url}"
-else:
-    WORKER = RAW_WORKER
+WORKER = os.environ.get("WORKER", "")
 
 def _post(endpoint, payload):
     data = json.dumps(payload).encode("utf-8")
